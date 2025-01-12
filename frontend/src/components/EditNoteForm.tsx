@@ -21,8 +21,10 @@ export default function EditNoteForm(props: NoteDataInterface) {
   const [open, setOpen] = React.useState(false);
   const { title, description, id } = props.noteData;
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpen = (e: React.BaseSyntheticEvent) => {
+    if(e.target.closest("#card")){
+      setOpen(true);
+    }
   };
 
   const handleClose = () => {
