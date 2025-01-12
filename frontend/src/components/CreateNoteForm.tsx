@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Box } from "@mui/material";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function CreateNoteForm() {
   const [open, setOpen] = React.useState(false);
@@ -33,14 +34,14 @@ export default function CreateNoteForm() {
     try {
       const apiUrl =
         process.env.REACT_APP_BACKEND_API_URL || "http://localhost:3000/api";
-      const response = await axios.post(apiUrl, data, {
+      await axios.post(apiUrl, data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
-      console.log(response.data);
+      toast.success("Note created successfully");
     } catch (error) {
+      toast.error("Something went wrong. Couldn't create a note.");
       console.error(error);
     }
   }
@@ -90,6 +91,7 @@ export default function CreateNoteForm() {
           <Button type="submit">Create</Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer closeOnClick={true} />
     </React.Fragment>
   );
 }

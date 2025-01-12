@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import NoteCard from "./NoteCard";
 import { Box } from "@mui/material";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 interface NoteDataInterface {
   noteData: {
@@ -22,8 +23,9 @@ export default function EditNoteForm(props: NoteDataInterface) {
   const { title, description, id } = props.noteData;
 
   const handleClickOpen = (e: React.BaseSyntheticEvent) => {
-    if(e.target.closest("#card")){
+    if (e.target.closest("#card")) {
       setOpen(true);
+      toast.warning("Editing note");
     }
   };
 
@@ -38,6 +40,7 @@ export default function EditNoteForm(props: NoteDataInterface) {
     const formJson = Object.fromEntries(formData.entries());
     SaveNote(formJson);
     handleClose();
+    toast.success("Note has been updated successfully");
   }
 
   async function SaveNote(data: object) {
@@ -59,7 +62,7 @@ export default function EditNoteForm(props: NoteDataInterface) {
   return (
     <React.Fragment>
       <Box onClick={handleClickOpen} sx={{ cursor: "pointer" }}>
-        <NoteCard title={title} description={description} />
+        <NoteCard title={title} description={description} _id={id} />
       </Box>
       <Dialog
         open={open}
@@ -100,6 +103,7 @@ export default function EditNoteForm(props: NoteDataInterface) {
           <Button type="submit">Save Changes</Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer closeOnClick={true} />
     </React.Fragment>
   );
 }
