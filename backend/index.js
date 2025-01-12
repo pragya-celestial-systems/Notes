@@ -8,11 +8,14 @@ config();
 const app = express();
 
 // middlewares
-app.use(cors({
-  origin: "*",
-}));
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
 
 app.use(express.json());
+app.use(express.urlencoded());
 app.use("/api", notesController);
 
 // eslint-disable-next-line no-undef
