@@ -1,11 +1,9 @@
 import React from "react";
 import { NoteInterface, useNotes } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
-import RestoreIcon from "@mui/icons-material/Restore";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { IconButton, Tooltip } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
+import CardMenu from "./Menu";
 
 const useStyles = makeStyles({
   container: {
@@ -100,6 +98,15 @@ function TrashNoteCard({ title, description, _id, bgColor = "whitesmoke" }: Note
     }
   }
 
+  const dummyObj = {
+    title: "",
+    description: "",
+    _id: "",
+    bgColor: "",
+  };
+
+  console.log(bgColor);
+
   return (
     <>
       <div
@@ -113,24 +120,7 @@ function TrashNoteCard({ title, description, _id, bgColor = "whitesmoke" }: Note
             <p>{description}</p>
           </div>
           <div className={styles.buttonContainer}>
-            <Tooltip title="Restore" placement="top" arrow>
-              <IconButton
-                className={styles.deleteButton}
-                onClick={handleRestoreNote}
-                id="moveButton"
-              >
-                <RestoreIcon sx={{ color: "grey" }}/>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete Permanently" placement="top" arrow>
-              <IconButton
-                className={styles.deleteButton}
-                onClick={handleDeleteForever}
-                id="moveButton"
-              >
-                <DeleteForeverIcon style={{ color: "#c50000" }} />
-              </IconButton>
-            </Tooltip>
+            <CardMenu onDelete={handleDeleteForever} onRestore={handleRestoreNote} isTrashFolder={true} noteData={dummyObj}/>
           </div>
         </div>
       </div>

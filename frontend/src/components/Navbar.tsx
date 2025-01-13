@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Menu from "./Menu";
+import SideBar from "./SideBar";
 
 export default function Navbar() {
   return (
@@ -14,7 +14,7 @@ export default function Navbar() {
         sx={{ background: "#fff", boxShadow:"0 3px 15px lightgrey", color: "#000" }}
       >
         <Toolbar>
-          <Menu />
+          <SideBar />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Notes
           </Typography>

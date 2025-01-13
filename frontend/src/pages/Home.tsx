@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { NoteInterface, NotesInterface, useNotes } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
-import EditNoteForm from "../components/EditNoteForm";
 import CreateNoteForm from "../components/CreateNoteForm";
 import { getOrSetData } from "../utility";
 import { toast, ToastContainer } from "react-toastify";
+import NoteCard from "../components/NoteCard";
 
 const useStyles = makeStyles({
   topContainer: {
@@ -55,14 +55,12 @@ function Home() {
       <div className={styles.notesContainer}>
         {notes &&
           notes.map((note: NoteInterface, index: number) => (
-            <EditNoteForm
+            <NoteCard
               key={index}
-              noteData={{
-                title: note.title,
-                description: note.description,
-                id: note._id,
-                bgColor:note.bgColor,
-              }}
+              title={note.title}
+              description={note.description}
+              bgColor={note.bgColor}
+              _id={note._id}
             />
           ))}
       </div>

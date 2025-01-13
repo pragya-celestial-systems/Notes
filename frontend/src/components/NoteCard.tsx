@@ -2,10 +2,9 @@ import React from "react";
 import { NoteInterface, useNotes } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
 import ColorDialog from "./ColorDialog";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton, Tooltip } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
+import CardMenu from "./Menu";
 
 const useStyles = makeStyles({
   container: {
@@ -65,17 +64,18 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
         title,
         description,
       };
+
       // step 1. Move data in the trash folder
       await getOrSetData("api/trash", "POST", trashData);
 
       // step 2. Remove selected note from the data
       await getOrSetData(`api/${_id}`, "DELETE");
 
-      // update real-time data
+      // step 3. Update real-time data
       const updatedNotes = notes.filter(n => n._id !== _id);
       setNotes(updatedNotes);
 
-      // step 3. Notify user that the trash has been deleted
+      // step 4. Notify user that the trash has been deleted
       toast.success("Note has been moved to trash");
     } catch (error) {
       console.log(error);
@@ -96,15 +96,12 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
             <p>{description}</p>
           </div>
           <div className={styles.buttonContainer}>
-            <Tooltip title="Delete" placement="top" arrow>
-              <IconButton
-                className={styles.deleteButton}
-                onClick={handleMoveToTrash}
-                id="deleteButton"
-              >
-                <DeleteIcon style={{ color: "#c50000" }} />
-              </IconButton>
-            </Tooltip>
+            <CardMenu onTrash={handleMoveToTrash} noteData={{
+              title,
+              description,
+              bgColor,
+              _id,
+            }}/>
           </div>
         </div>
         <div className={styles.bottomContainer}>

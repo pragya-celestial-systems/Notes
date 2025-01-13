@@ -5,87 +5,67 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import NoteCard from "./NoteCard";
 import { Box } from "@mui/material";
-import { ToastContainer } from "react-toastify";
-import { getOrSetData } from "../utility";
-import { useNotes } from "../context/Notes";
 
 interface NoteDataInterface {
   noteData: {
     title: string;
     description: string;
-    id: string | undefined;
+    _id?: string;
     bgColor?: string;
   };
+  onEdit?: (
+    e: React.FormEvent<HTMLFormElement>,
+    title: string,
+    description: string,
+    id: string | undefined
+  ) => void;
 }
 
-export default function EditNoteForm(props: NoteDataInterface) {
+export default function EditNoteForm({ noteData, onEdit }: NoteDataInterface) {
   const [open, setOpen] = React.useState(false);
-  const { title, description, id, bgColor } = props.noteData;
+  const { title, description, _id } = noteData;
   const [titleVal, setTitleVal] = React.useState<string>("");
   const [descVal, setDescVal] = React.useState<string>("");
-  const { setNotes } = useNotes();
 
   React.useEffect(() => {
     setTitleVal(title);
     setDescVal(description);
-  }, []);
+  }, [title, description]);
 
-  const handleClickOpen = (e: React.BaseSyntheticEvent) => {
-    if (e.target.closest("#card")) {
-      setOpen(true);
-    }
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  async function handleSaveChanges(event: React.FormEvent<HTMLFormElement>) {
-    try {
-      event.preventDefault();
-      const userInput = {
-        title: titleVal,
-        description: descVal,
-      };
-
-      const formJson = JSON.stringify(userInput);
-
-      // update the data in the database
-      await getOrSetData(`api/${id}`, "PATCH", formJson);
-      const data = await getOrSetData("api", "GET");
-      setNotes(data);
-      // close the dialog and display toast
+  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (onEdit) {
+      onEdit(e, titleVal, descVal, _id);
       handleClose();
-    } catch (error: unknown) {
-      console.log(error);
     }
-  }
+  };
 
-  function handleChangeValue(e: React.BaseSyntheticEvent) {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     if (name === "title") setTitleVal(value);
     else setDescVal(value);
-  }
+  };
 
   return (
     <React.Fragment>
       <Box onClick={handleClickOpen} sx={{ cursor: "pointer" }}>
-        <NoteCard
-          title={title}
-          description={description}
-          _id={id}
-          bgColor={bgColor}
-        />
+        Edit
       </Box>
       <Dialog
         open={open}
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: handleSaveChanges,
+          onSubmit: handleSave,
         }}
       >
         <DialogTitle>Edit Note</DialogTitle>
@@ -108,8 +88,7 @@ export default function EditNoteForm(props: NoteDataInterface) {
             id="description"
             name="description"
             label="Description"
-            type="text"
-            defaultValue={descVal}
+            value={descVal}
             onChange={handleChangeValue}
             fullWidth
             variant="outlined"
@@ -123,7 +102,6 @@ export default function EditNoteForm(props: NoteDataInterface) {
           <Button type="submit">Save Changes</Button>
         </DialogActions>
       </Dialog>
-      <ToastContainer closeOnClick={true} />
     </React.Fragment>
   );
 }

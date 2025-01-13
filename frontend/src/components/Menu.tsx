@@ -1,60 +1,102 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditNoteForm from "./EditNoteForm";
+import { NoteInterface, useNotes } from "../context/Notes";
+import { getOrSetData } from "../utility";
 
-export default function Menu() {
-  const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
+interface Props {
+  onDelete?: () => void;
+  onRestore?: () => void;
+  isTrashFolder?: boolean;
+  onTrash?: (e: React.BaseSyntheticEvent) => Promise<void>;
+  noteData: NoteInterface;
+  onEdit?: () => void;
+}
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
+export default function CardMenu({
+  onDelete,
+  onRestore,
+  onTrash,
+  isTrashFolder = false,
+  noteData,
+}: Props) {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { setNotes } = useNotes();
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
   };
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/")}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary="All Notes" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/trash")}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary="Trash" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
-  );
+  const handleSaveChange = async (
+    e: React.FormEvent<HTMLFormElement>,
+    title: string,
+    description: string,
+    id: string | undefined,
+  ) => {
+    try {
+      e.preventDefault();
+      console.log("clicked");
+      if (!id) {
+        console.error("ID is undefined. Cannot save changes.");
+        return;
+      }
+
+      const userInput = {
+        title,
+        description,
+      };
+
+      const formJson = JSON.stringify(userInput);
+
+      // Update the data in the database
+      await getOrSetData(`api/${id}`, "PATCH", formJson);
+      const data = await getOrSetData("api", "GET");
+      setNotes(data);
+      setAnchorEl(null);
+    } catch (error: unknown) {
+      console.error(error);
+    }
+  };
 
   return (
     <div>
-      <IconButton onClick={toggleDrawer(true)}>
-        <MenuIcon />
-      </IconButton>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
+      <Button
+        id="demo-positioned-button"
+        aria-controls={open ? "demo-positioned-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <MoreVertIcon style={{ color: "grey" }} />
+      </Button>
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+      >
+        {isTrashFolder ? (
+          <>
+            <MenuItem onClick={onDelete}>Delete Permanently</MenuItem>
+            <MenuItem onClick={onRestore}>Restore</MenuItem>
+          </>
+        ) : (
+          <>
+            <MenuItem onClick={onTrash}>Delete</MenuItem>
+            <MenuItem>
+              <EditNoteForm noteData={noteData} onEdit={handleSaveChange} />
+            </MenuItem>
+          </>
+        )}
+      </Menu>
     </div>
   );
 }
