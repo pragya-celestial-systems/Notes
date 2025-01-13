@@ -6,7 +6,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { makeStyles } from "@mui/styles";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
-import { DialogActions } from "@mui/material";
+import { DialogActions, Tooltip } from "@mui/material";
 import { NotesInterface, useNotes } from "../context/Notes";
 
 interface Props {
@@ -69,7 +69,9 @@ export default function ColorDialog({ id }: Props) {
 
   return (
     <React.Fragment>
-      <div className={styles.colorButton} onClick={handleClickOpen}></div>
+      <Tooltip title="Set Color" placement="top" arrow>
+        <div className={styles.colorButton} onClick={handleClickOpen}></div>
+      </Tooltip>
       <Dialog
         open={open}
         onClose={handleClose}

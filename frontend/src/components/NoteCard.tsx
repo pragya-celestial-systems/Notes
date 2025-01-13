@@ -3,7 +3,7 @@ import { NoteInterface, useNotes } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
 import ColorDialog from "./ColorDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
 
@@ -96,13 +96,15 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
             <p>{description}</p>
           </div>
           <div className={styles.buttonContainer}>
-            <IconButton
-              className={styles.deleteButton}
-              onClick={handleMoveToTrash}
-              id="deleteButton"
-            >
-              <DeleteIcon style={{ color: "#c50000" }} />
-            </IconButton>
+            <Tooltip title="Delete" placement="top" arrow>
+              <IconButton
+                className={styles.deleteButton}
+                onClick={handleMoveToTrash}
+                id="deleteButton"
+              >
+                <DeleteIcon style={{ color: "#c50000" }} />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
         <div className={styles.bottomContainer}>
