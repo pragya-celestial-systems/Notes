@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { handleAddTrashNote, handleGetTrashNotes } from "../models/trash-notes-model.js";
+import { handleAddTrashNote, handleDeleteTrashNote, handleGetTrashNotes } from "../models/trash-notes-model.js";
 
 const router = Router(); 
 
 // routes
-router.get("/",handleGetTrashNotes);
-router.route("/").post(handleAddTrashNote);
+router.route("/").get(handleGetTrashNotes).post(handleAddTrashNote);
+router.route("/:noteId").delete(handleDeleteTrashNote);
 
 export default router;

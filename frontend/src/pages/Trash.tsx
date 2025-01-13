@@ -5,6 +5,7 @@ import { makeStyles } from "@mui/styles";
 import EditNoteForm from "../components/EditNoteForm";
 import { NoteInterface, NotesInterface, useNotes } from "../context/Notes";
 import NoteCard from "../components/NoteCard";
+import TrashNoteCard from "../components/TrashNoteCard";
 
 const useStyles = makeStyles({
   topContainer: {
@@ -27,13 +28,13 @@ const useStyles = makeStyles({
 });
 
 function Trash() {
-  const { notes, setNotes }: NotesInterface = useNotes();
+  const { trashNotes, setTrashNotes }: NotesInterface = useNotes();
   const styles = useStyles();
 
   async function getTrashNotes() {
     try {
       const response = await getOrSetData("api/trash", "GET");
-      setNotes(response);
+      setTrashNotes(response);
     } catch (error) {
       console.log(error);
     }
@@ -49,8 +50,8 @@ function Trash() {
         <h1 className={styles.heading}>Trash Bin</h1>
       </div>
       <div className={styles.notesContainer}>
-        {notes && notes.map((note, index) => (
-          <NoteCard key={index} title={note.title} description={note.description} bgColor={note.bgColor || "whitesmoke"} _id={note._id}/>
+        {trashNotes && trashNotes .map((note, index) => (
+          <TrashNoteCard key={index} title={note.title} description={note.description} bgColor={note.bgColor || "whitesmoke"} _id={note._id}/>
         ))}
       </div>
     </>

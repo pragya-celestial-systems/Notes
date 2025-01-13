@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { NotesProvider } from "./context/Notes";
-import { ColorProvider } from "./context/Color";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -11,9 +10,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <NotesProvider>
-      <ColorProvider>
-        <App />
-      </ColorProvider>
+      <App />
     </NotesProvider>
   </React.StrictMode>,
 );

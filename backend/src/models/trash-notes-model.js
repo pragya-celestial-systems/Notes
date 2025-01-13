@@ -2,9 +2,7 @@ import TrashNote from "../database/schema/trash-note-schema.js";
 
 export async function handleGetTrashNotes(req, res) {
   try {
-    console.log("hello world");
     const allTrashedNotes = await TrashNote.find();
-    console.log(allTrashedNotes);
     res.status(200).send(allTrashedNotes);
   } catch (error) {
     console.log(error);
@@ -23,6 +21,17 @@ export async function handleAddTrashNote(req, res) {
     res
       .status(201)
       .send({ message: "Trash note created successfully", data: response });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Something went wrong with the server.");
+  }
+}
+
+export async function handleDeleteTrashNote(req, res) {
+  try {
+    const { noteId } = req.params;
+    await TrashNote.findByIdAndDelete(noteId);
+    await res.status(200).send(noteId);
   } catch (error) {
     console.log(error);
     res.status(500).send("Something went wrong with the server.");

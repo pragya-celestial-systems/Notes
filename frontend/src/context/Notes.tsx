@@ -10,6 +10,8 @@ export interface NoteInterface {
 export interface NotesInterface {
   notes: NoteInterface[];
   setNotes: (note: NoteInterface[]) => void;
+  trashNotes: NoteInterface[],
+  setTrashNotes: (note: NoteInterface[]) => void;
 }
 
 interface NotesProviderInterface {
@@ -19,15 +21,18 @@ interface NotesProviderInterface {
 const dummyObject: NotesInterface = {
   notes: [],
   setNotes: () => {},
+  trashNotes: [],
+  setTrashNotes: () => {},
 };
 
 const NotesContext = createContext<NotesInterface>(dummyObject);
 
 export function NotesProvider({ children }: NotesProviderInterface) {
   const [notes, setNotes] = useState<NoteInterface[]>([]);
+  const [trashNotes, setTrashNotes] = useState<NoteInterface[]>([]);
 
   return (
-    <NotesContext.Provider value={{ notes, setNotes }}>
+    <NotesContext.Provider value={{ notes, setNotes, trashNotes, setTrashNotes }}>
       {children}
     </NotesContext.Provider>
   );

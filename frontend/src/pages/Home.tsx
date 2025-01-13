@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NoteInterface, NotesInterface, useNotes } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
 import EditNoteForm from "../components/EditNoteForm";
 import CreateNoteForm from "../components/CreateNoteForm";
+import { getOrSetData } from "../utility";
+import { toast, ToastContainer } from "react-toastify";
 
 const useStyles = makeStyles({
   topContainer: {
@@ -28,6 +30,22 @@ function Home() {
   const { notes }: NotesInterface = useNotes();
   const styles = useStyles();
 
+  const { setNotes }: NotesInterface = useNotes();
+
+  async function getData() {
+    try {
+      const response = await getOrSetData("api", "GET");
+      setNotes(response);
+    } catch (error: unknown) {
+      toast.error("Something went wrong. Couldn't fetch data.");
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <>
       <div className={styles.topContainer}>
@@ -48,6 +66,7 @@ function Home() {
             />
           ))}
       </div>
+      <ToastContainer closeOnClick={true} />
     </>
   );
 }

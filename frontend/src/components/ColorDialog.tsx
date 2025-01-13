@@ -7,6 +7,7 @@ import { makeStyles } from "@mui/styles";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
 import { DialogActions } from "@mui/material";
+import { NotesInterface, useNotes } from "../context/Notes";
 
 interface Props {
   id : string | undefined;
@@ -39,6 +40,7 @@ const useStyles = makeStyles({
 export default function ColorDialog({ id }: Props) {
   const [open, setOpen] = React.useState(false);
   const styles = useStyles();
+  const { setNotes }: NotesInterface = useNotes();
 
   const handleClickOpen = (e: React.BaseSyntheticEvent) => {
     e.stopPropagation();
@@ -56,6 +58,8 @@ export default function ColorDialog({ id }: Props) {
       };
 
       await getOrSetData(`api/${id}`, "PATCH", JSON.stringify(data));
+      const response = await getOrSetData("api", "GET");
+      setNotes(response);
       setOpen(false);
     } catch (error: unknown) {
       console.log(error);
