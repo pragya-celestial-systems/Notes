@@ -6,8 +6,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { makeStyles } from "@mui/styles";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
-import { DialogActions, Tooltip } from "@mui/material";
+import { DialogActions, IconButton, Tooltip } from "@mui/material";
 import { NotesInterface, useNotes } from "../context/Notes";
+import PaletteIcon from '@mui/icons-material/Palette';
 
 interface Props {
   id : string | undefined;
@@ -28,12 +29,6 @@ const useStyles = makeStyles({
     borderRadius: "50%",
     display: "inline",
     marginRight: "0.5rem",
-  },
-  colorButton: {
-    height: "35px",
-    width: "35px",
-    borderRadius: "50%",
-    background: "white",
   },
 });
 
@@ -70,7 +65,9 @@ export default function ColorDialog({ id }: Props) {
   return (
     <React.Fragment>
       <Tooltip title="Set Color" placement="top" arrow>
-        <div className={styles.colorButton} onClick={handleClickOpen}></div>
+        <IconButton onClick={handleClickOpen}>
+          <PaletteIcon sx={{ color: "grey", fontSize: "2rem" }}/>
+        </IconButton>
       </Tooltip>
       <Dialog
         open={open}
