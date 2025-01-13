@@ -3,13 +3,13 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useColor } from "../context/Color";
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { getOrSetData } from "../utility";
+import { DialogActions } from "@mui/material";
 
 interface Props {
-  id : string | undefined;
+  id: string | undefined;
 }
 
 const colors = ["AntiqueWhite", "AliceBlue", "beige", "bisque", "whitesmoke"];
@@ -38,7 +38,6 @@ const useStyles = makeStyles({
 
 export default function ColorDialog({ id }: Props) {
   const [open, setOpen] = React.useState(false);
-  const { setColor } = useColor();
   const styles = useStyles();
 
   const handleClickOpen = (e: React.BaseSyntheticEvent) => {
@@ -50,30 +49,17 @@ export default function ColorDialog({ id }: Props) {
     setOpen(false);
   };
 
-  function handleChangeColor(e: React.BaseSyntheticEvent) {
-    localStorage.setItem("color", e.target.textContent);
-    setColor(e.target.textContent);
-    changeColor(e.target.textContent);
-    setOpen(false);
-  }
-
-  async function changeColor(color: string) {
+  async function handleChangeColor(e: React.BaseSyntheticEvent) {
     try {
-      const data = {
-        bgColor: color,
+      const data: object = {
+        bgColor: e.target.textContent,
       };
 
-      const apiUrl = `${process.env.REACT_APP_BACKEND_API_URL}/${id}` || `http://localhost:3000/api/${id}`;
-      const response = await axios.patch(apiUrl, JSON.stringify(data), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      toast.warn("The background color has been updated");
-      console.log(response);
-    } catch (error) {
+      await getOrSetData(`api/${id}`, "PATCH", JSON.stringify(data));
+      setOpen(false);
+    } catch (error: unknown) {
       console.log(error);
+      toast.error("Something went wrong. Couldn't change the color");
     }
   }
 
@@ -103,7 +89,11 @@ export default function ColorDialog({ id }: Props) {
             </div>
           ))}
         </DialogContent>
+        <DialogActions>
+          <span style={{ color: "#1976d2" }}>Cancel</span>
+        </DialogActions>
       </Dialog>
+      <ToastContainer />
     </React.Fragment>
   );
 }

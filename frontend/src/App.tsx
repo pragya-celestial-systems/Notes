@@ -1,38 +1,40 @@
-import axios from "axios";
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import { NotesInterface, useNotes } from "./context/Notes";
 import Trash from "./pages/Trash";
+import { getOrSetData } from "./utility";
+import { toast, ToastContainer } from "react-toastify";
 
 function App() {
   const { setNotes }: NotesInterface = useNotes();
-  const apiUrl: string =
-    process.env.REACT_APP_BACKEND_API_URL || "http://localhost:3000/api";
-  async function fetchData() {
+
+  async function getData() {
     try {
-      if (apiUrl) {
-        const response = await axios.get("http://localhost:3000/api");
-        setNotes(response.data);
-      }
+      const response = await getOrSetData("api", "GET");
+      setNotes(response);
     } catch (error: unknown) {
+      toast.error("Something went wrong. Couldn't fetch data.");
       console.log(error);
     }
   }
 
   useEffect(() => {
-    fetchData();
-  }, [apiUrl]);
+    getData();
+  }, []);
 
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/trash" element={<Trash />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/trash" element={<Trash />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer closeOnClick={true} />
+    </>
   );
 }
 

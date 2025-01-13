@@ -7,8 +7,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import NoteCard from "./NoteCard";
 import { Box } from "@mui/material";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { getOrSetData } from "../utility";
 
 interface NoteDataInterface {
   noteData: {
@@ -26,7 +26,6 @@ export default function EditNoteForm(props: NoteDataInterface) {
   const handleClickOpen = (e: React.BaseSyntheticEvent) => {
     if (e.target.closest("#card")) {
       setOpen(true);
-      toast.warning("Editing note");
     }
   };
 
@@ -34,36 +33,33 @@ export default function EditNoteForm(props: NoteDataInterface) {
     setOpen(false);
   };
 
-  function handleSaveChanges(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries(formData.entries());
-    SaveNote(formJson);
-    handleClose();
-    toast.success("Note has been updated successfully");
-  }
-
-  async function SaveNote(data: object) {
+  async function handleSaveChanges(event: React.FormEvent<HTMLFormElement>) {
     try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_API_URL}/${id}`;
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const formJson = Object.fromEntries(formData.entries());
 
-      const response = await axios.patch(apiUrl, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // update the data in the database
+      await getOrSetData(`api/${id}`, "PATCH", formJson);
 
-      console.log(response);
-    } catch (error) {
-      console.error("Error saving note:", error);
+      // close the dialog and display toast
+      handleClose();
+      toast.success("Note has been updated successfully");
+    } catch (error: unknown) {
+      console.log(error);
+      toast.error("Something went wrong. Couldn't update note");
     }
   }
 
   return (
     <React.Fragment>
       <Box onClick={handleClickOpen} sx={{ cursor: "pointer" }}>
-        <NoteCard title={title} description={description} _id={id} bgColor={bgColor} />
+        <NoteCard
+          title={title}
+          description={description}
+          _id={id}
+          bgColor={bgColor}
+        />
       </Box>
       <Dialog
         open={open}

@@ -33,11 +33,6 @@ export async function handleCreateNote(req, res) {
 export async function handleGetNoteById(req, res) {
   try {
     const { noteId } = req.params;
-
-    // if (isNaN(noteId)) {
-    //   return res.status(400).send({ error: "Id is invalid. Id must be a number." });
-    // }
-
     const note = await Note.findById(noteId);
 
     if (!note) {

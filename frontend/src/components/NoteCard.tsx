@@ -2,11 +2,10 @@ import React from "react";
 import { NoteInterface } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
 import ColorDialog from "./ColorDialog";
-import { useColor } from "../context/Color";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { getOrSetData } from "../utility";
 
 const useStyles = makeStyles({
   container: {
@@ -47,9 +46,8 @@ const useStyles = makeStyles({
 
 function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
   const styles = useStyles();
-  const { color } = useColor();
 
-  function handleMoveToTrash(e: React.BaseSyntheticEvent) {
+  async function handleMoveToTrash(e: React.BaseSyntheticEvent) {
     try {
       e.stopPropagation();
       const confirm = window.confirm("Move this note to the trash?");
@@ -62,10 +60,10 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
         description,
       };
       // step 1. Move data in the trash folder
-      moveFromTrash(trashData);
+      await getOrSetData("api/trash", "POST", trashData);
 
       // step 2. Remove selected note from the data
-      deleteNote();
+      await getOrSetData(`api/${_id}`, "DELETE");
 
       // step 3. Notify user that the trash has been deleted
       toast.success("Note has been moved to trash");
@@ -75,38 +73,11 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
     }
   }
 
-  async function deleteNote() {
-    try {
-      const trashUrl: string | undefined =
-        process.env.REACT_APP_BACKEND_API_URL;
-      await axios.delete(`${trashUrl}/${_id}`);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function moveFromTrash(data: NoteInterface) {
-    try {
-      const trashUrl: string | undefined = process.env.REACT_APP_Trash_API_URL;
-
-      if (trashUrl) {
-        await axios.post(trashUrl, data, {
-          headers: {
-            "Content-type": "application/json",
-          },
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   return (
     <>
       <div
         className={styles.container}
         style={{ background: bgColor ? bgColor : "whitesmoke" }}
-        // style={{ background: color ? color : "whitesmoke" }}
         id="card"
       >
         <div className={styles.topContainer}>
@@ -125,7 +96,7 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
           </div>
         </div>
         <div className={styles.bottomContainer}>
-          <ColorDialog id={_id}/>
+          <ColorDialog id={_id} />
         </div>
       </div>
       <ToastContainer closeOnClick={true} />
