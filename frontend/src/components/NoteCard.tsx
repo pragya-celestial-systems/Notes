@@ -1,5 +1,5 @@
 import React from "react";
-import { NoteInterface } from "../context/Notes";
+import { NoteInterface, useNotes } from "../context/Notes";
 import { makeStyles } from "@mui/styles";
 import ColorDialog from "./ColorDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,6 +17,11 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "space-between",
     flexDirection: "column",
+    "&:hover": {
+      transition: "0.3s",
+      transform: "scale(1.02)",
+      boxShadow: "0 5px 15px lightgrey",
+    },
   },
   topContainer: {
     height: "70%",
@@ -46,6 +51,7 @@ const useStyles = makeStyles({
 
 function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
   const styles = useStyles();
+  const { notes, setNotes } = useNotes();
 
   async function handleMoveToTrash(e: React.BaseSyntheticEvent) {
     try {
@@ -64,6 +70,10 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
 
       // step 2. Remove selected note from the data
       await getOrSetData(`api/${_id}`, "DELETE");
+
+      // update real-time data
+      const updatedNotes = notes.filter(n => n._id !== _id);
+      setNotes(updatedNotes);
 
       // step 3. Notify user that the trash has been deleted
       toast.success("Note has been moved to trash");
@@ -99,7 +109,7 @@ function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
           <ColorDialog id={_id} />
         </div>
       </div>
-      <ToastContainer closeOnClick={true} />
+      <ToastContainer />
     </>
   );
 }

@@ -2,8 +2,10 @@ import TrashNote from "../database/schema/trash-note-schema.js";
 
 export async function handleGetTrashNotes(req, res) {
   try {
-    const trashNotes = await TrashNote.find();
-    res.status(200).send(trashNotes);
+    console.log("hello world");
+    const allTrashedNotes = await TrashNote.find();
+    console.log(allTrashedNotes);
+    res.status(200).send(allTrashedNotes);
   } catch (error) {
     console.log(error);
     res.status(500).send("Something went wrong with the server.");

@@ -7,8 +7,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import NoteCard from "./NoteCard";
 import { Box } from "@mui/material";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
+import { useNotes } from "../context/Notes";
 
 interface NoteDataInterface {
   noteData: {
@@ -22,6 +23,14 @@ interface NoteDataInterface {
 export default function EditNoteForm(props: NoteDataInterface) {
   const [open, setOpen] = React.useState(false);
   const { title, description, id, bgColor } = props.noteData;
+  const [titleVal, setTitleVal] = React.useState<string>("");
+  const [descVal, setDescVal] = React.useState<string>("");
+  const { setNotes } = useNotes();
+
+  React.useEffect(() => {
+    setTitleVal(title);
+    setDescVal(description);
+  }, []);
 
   const handleClickOpen = (e: React.BaseSyntheticEvent) => {
     if (e.target.closest("#card")) {
@@ -36,19 +45,29 @@ export default function EditNoteForm(props: NoteDataInterface) {
   async function handleSaveChanges(event: React.FormEvent<HTMLFormElement>) {
     try {
       event.preventDefault();
-      const formData = new FormData(event.currentTarget);
-      const formJson = Object.fromEntries(formData.entries());
+      const userInput = {
+        title: titleVal,
+        description: descVal,
+      };
+
+      const formJson = JSON.stringify(userInput);
 
       // update the data in the database
       await getOrSetData(`api/${id}`, "PATCH", formJson);
-
+      const data = await getOrSetData("api", "GET");
+      setNotes(data);
       // close the dialog and display toast
       handleClose();
-      toast.success("Note has been updated successfully");
     } catch (error: unknown) {
       console.log(error);
-      toast.error("Something went wrong. Couldn't update note");
     }
+  }
+
+  function handleChangeValue(e: React.BaseSyntheticEvent) {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "title") setTitleVal(value);
+    else setDescVal(value);
   }
 
   return (
@@ -77,9 +96,11 @@ export default function EditNoteForm(props: NoteDataInterface) {
             id="title"
             name="title"
             label="Title"
+            value={titleVal}
             type="text"
             fullWidth
             variant="outlined"
+            onChange={handleChangeValue}
           />
           <TextField
             required
@@ -88,6 +109,8 @@ export default function EditNoteForm(props: NoteDataInterface) {
             name="description"
             label="Description"
             type="text"
+            defaultValue={descVal}
+            onChange={handleChangeValue}
             fullWidth
             variant="outlined"
             multiline

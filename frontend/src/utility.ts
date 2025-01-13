@@ -31,7 +31,6 @@ export async function getOrSetData(
   data: object | string = {},
 ) {
   try {
-    console.log(endpoint, method);
     const baseUrl: string | undefined = process.env.REACT_APP_BASE_URL;
     if (!baseUrl) throw new Error("Base URL is undefined.");
 
@@ -54,6 +53,7 @@ export async function getOrSetData(
       response = await axios.patch(`${baseUrl}/${endpoint}`, data, {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
       });
       return response.data;

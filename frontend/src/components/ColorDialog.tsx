@@ -9,7 +9,7 @@ import { getOrSetData } from "../utility";
 import { DialogActions } from "@mui/material";
 
 interface Props {
-  id: string | undefined;
+  id : string | undefined;
 }
 
 const colors = ["AntiqueWhite", "AliceBlue", "beige", "bisque", "whitesmoke"];

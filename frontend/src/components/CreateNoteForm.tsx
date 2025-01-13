@@ -9,9 +9,11 @@ import { Box } from "@mui/material";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
+import { useNotes } from "../context/Notes";
 
 export default function CreateNoteForm() {
   const [open, setOpen] = React.useState(false);
+  const { setNotes } = useNotes();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,6 +34,8 @@ export default function CreateNoteForm() {
   async function createNote(data: object) {
     try {
       await getOrSetData("api", "POST", data);
+      const response = await getOrSetData("api", "GET");
+      setNotes(response);
       toast.success("Note created successfully");
     } catch (error) {
       toast.error("Something went wrong. Couldn't create a note.");
