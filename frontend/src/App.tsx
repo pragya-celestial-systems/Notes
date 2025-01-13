@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import { NotesInterface, useNotes } from "./context/Notes";
+import Trash from "./pages/Trash";
 
 function App() {
   const { setNotes }: NotesInterface = useNotes();
@@ -29,6 +30,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/trash" element={<Trash />} />
       </Routes>
     </BrowserRouter>
   );

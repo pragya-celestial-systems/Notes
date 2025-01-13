@@ -5,6 +5,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useColor } from "../context/Color";
 import { makeStyles } from "@mui/styles";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+interface Props {
+  id : string | undefined;
+}
 
 const colors = ["AntiqueWhite", "AliceBlue", "beige", "bisque", "whitesmoke"];
 
@@ -30,7 +36,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ColorDialog() {
+export default function ColorDialog({ id }: Props) {
   const [open, setOpen] = React.useState(false);
   const { setColor } = useColor();
   const styles = useStyles();
@@ -47,7 +53,28 @@ export default function ColorDialog() {
   function handleChangeColor(e: React.BaseSyntheticEvent) {
     localStorage.setItem("color", e.target.textContent);
     setColor(e.target.textContent);
+    changeColor(e.target.textContent);
     setOpen(false);
+  }
+
+  async function changeColor(color: string) {
+    try {
+      const data = {
+        bgColor: color,
+      };
+
+      const apiUrl = `${process.env.REACT_APP_BACKEND_API_URL}/${id}` || `http://localhost:3000/api/${id}`;
+      const response = await axios.patch(apiUrl, JSON.stringify(data), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      toast.warn("The background color has been updated");
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

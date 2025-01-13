@@ -43,6 +43,7 @@ function Home() {
                 title: note.title,
                 description: note.description,
                 id: note._id,
+                bgColor:note.bgColor,
               }}
             />
           ))}

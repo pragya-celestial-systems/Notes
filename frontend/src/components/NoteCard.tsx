@@ -45,7 +45,7 @@ const useStyles = makeStyles({
   },
 });
 
-function NoteCard({ title, description, _id }: NoteInterface) {
+function NoteCard({ title, description, _id, bgColor }: NoteInterface) {
   const styles = useStyles();
   const { color } = useColor();
 
@@ -105,7 +105,8 @@ function NoteCard({ title, description, _id }: NoteInterface) {
     <>
       <div
         className={styles.container}
-        style={{ background: color ? color : "whitesmoke" }}
+        style={{ background: bgColor ? bgColor : "whitesmoke" }}
+        // style={{ background: color ? color : "whitesmoke" }}
         id="card"
       >
         <div className={styles.topContainer}>
@@ -124,7 +125,7 @@ function NoteCard({ title, description, _id }: NoteInterface) {
           </div>
         </div>
         <div className={styles.bottomContainer}>
-          <ColorDialog />
+          <ColorDialog id={_id}/>
         </div>
       </div>
       <ToastContainer closeOnClick={true} />

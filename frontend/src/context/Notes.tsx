@@ -4,6 +4,7 @@ export interface NoteInterface {
   title: string;
   description: string;
   _id?: string;
+  bgColor?: string;
 }
 
 export interface NotesInterface {

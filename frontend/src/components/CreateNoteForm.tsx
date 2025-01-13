@@ -25,7 +25,6 @@ export default function CreateNoteForm() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries((formData as any).entries());
-    console.log("Note created: ", formJson);
     createNote(formJson);
     handleClose();
   }

@@ -15,12 +15,13 @@ interface NoteDataInterface {
     title: string;
     description: string;
     id: string | undefined;
+    bgColor?: string;
   };
 }
 
 export default function EditNoteForm(props: NoteDataInterface) {
   const [open, setOpen] = React.useState(false);
-  const { title, description, id } = props.noteData;
+  const { title, description, id, bgColor } = props.noteData;
 
   const handleClickOpen = (e: React.BaseSyntheticEvent) => {
     if (e.target.closest("#card")) {
@@ -62,7 +63,7 @@ export default function EditNoteForm(props: NoteDataInterface) {
   return (
     <React.Fragment>
       <Box onClick={handleClickOpen} sx={{ cursor: "pointer" }}>
-        <NoteCard title={title} description={description} _id={id} />
+        <NoteCard title={title} description={description} _id={id} bgColor={bgColor} />
       </Box>
       <Dialog
         open={open}

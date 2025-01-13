@@ -8,6 +8,10 @@ const trashNoteSchema = mongoose.Schema({
   description: {
     type: String,
   },
+  bgColor: {
+    type: String,
+    default: "whitesmoke",
+  },
 });
 
 const TrashNote = mongoose.model("trashNote", trashNoteSchema);
