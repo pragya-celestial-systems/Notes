@@ -93,7 +93,7 @@ export default function ColorDialog({ id }: Props) {
           ))}
         </DialogContent>
         <DialogActions>
-          <span style={{ color: "#1976d2" }}>Cancel</span>
+          <span style={{ color: "#1976d2", cursor: "pointer" }} onClick={handleClose}>Cancel</span>
         </DialogActions>
       </Dialog>
       <ToastContainer />

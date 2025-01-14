@@ -5,8 +5,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box } from "@mui/material";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import { IconButton } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
 import { useNotes } from "../context/Notes";
@@ -45,9 +45,9 @@ export default function CreateNoteForm() {
 
   return (
     <React.Fragment>
-      <Box onClick={handleClickOpen} sx={{ cursor: "pointer" }}>
-        <NoteAddIcon />
-      </Box>
+      <IconButton onClick={handleClickOpen} sx={{ background: "whitesmoke" }}>
+        <AddIcon sx={{ fontSize: "2rem", color: "grey" }} />
+      </IconButton>
       <Dialog
         open={open}
         onClose={handleClose}
