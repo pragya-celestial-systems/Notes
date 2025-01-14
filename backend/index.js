@@ -1,9 +1,9 @@
 import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
-import connectToMongodb from "./src/database/mongdb-config.js";
-import notesController from "./src/controllers/notes-controller.js";
-import trashController from "./src/controllers/trash-notes-controller.js";
+import connectToMongodb from "./src/config/mongdb-config.js";
+import notesRouter from "./src/routers/notes-router.js";
+import trashRouter from "./src/routers/trash-notes-router.js";
 config();
 
 const app = express();
@@ -17,8 +17,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded());
-app.use("/api/trash", trashController);
-app.use("/api", notesController);
+app.use("/api/trash", trashRouter);
+app.use("/api", notesRouter);
 
 // eslint-disable-next-line no-undef
 app.listen(process.env.PORT, () => {
