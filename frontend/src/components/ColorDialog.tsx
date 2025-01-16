@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { getOrSetData } from "../utility";
 import { DialogActions, IconButton, Tooltip } from "@mui/material";
 import { NotesInterface, useNotes } from "../context/Notes";
-import PaletteIcon from '@mui/icons-material/Palette';
+import PaletteIcon from "@mui/icons-material/Palette";
 
 interface Props {
   id : string | undefined;
@@ -48,8 +48,9 @@ export default function ColorDialog({ id }: Props) {
 
   async function handleChangeColor(e: React.BaseSyntheticEvent) {
     try {
+      const color = e.target.textContent;
       const data: object = {
-        bgColor: e.target.textContent,
+        bgColor: color === "default" ? "whitesmoke" : color,
       };
 
       await getOrSetData(`api/${id}`, "PATCH", JSON.stringify(data));

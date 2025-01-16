@@ -1,11 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { getOrSetData } from "../utility";
 import { makeStyles } from "@mui/styles";
-import EditNoteForm from "../components/EditNoteForm";
-import { NoteInterface, NotesInterface, useNotes } from "../context/Notes";
-import NoteCard from "../components/NoteCard";
+import { NotesInterface, useNotes } from "../context/Notes";
 import TrashNoteCard from "../components/TrashNoteCard";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const useStyles = makeStyles({
   topContainer: {
@@ -24,6 +22,15 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
+  },
+  messageBox: {
+    display: "flex",
+    height: "90vh",
+    width: "100svw",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "grey",
+    flexDirection: "column",
   },
 });
 
@@ -46,13 +53,26 @@ function Trash() {
 
   return (
     <>
-      <div className={styles.topContainer}>
+      {trashNotes && trashNotes.length > 0 && <div className={styles.topContainer}>
         <h1 className={styles.heading}>Trash Bin</h1>
-      </div>
+      </div>}
       <div className={styles.notesContainer}>
-        {trashNotes && trashNotes .map((note, index) => (
-          <TrashNoteCard key={index} title={note.title} description={note.description} bgColor={note.bgColor || "whitesmoke"} _id={note._id}/>
-        ))}
+        {trashNotes &&
+          trashNotes.map((note, index) => (
+            <TrashNoteCard
+              key={index}
+              title={note.title}
+              description={note.description}
+              bgColor={note.bgColor || "whitesmoke"}
+              _id={note._id}
+            />
+          ))}
+        {trashNotes.length <= 0 && (
+          <div className={styles.messageBox}>
+            <DeleteIcon sx={{fontSize: "10rem", color: "lightgrey"}}/>
+            <h1>Your Trash is Empty</h1>
+          </div>
+        )}
       </div>
     </>
   );
